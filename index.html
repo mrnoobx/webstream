@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magnet Streamer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d0d0d;
+      color: #f0f0f0;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 80%;
+      max-width: 600px;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      background: #00b894;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #019875;
+    }
+    #status {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #aaa;
+      min-height: 1.5rem;
+    }
+    video {
+      margin-top: 2rem;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.1);
+    }
+    .spinner {
+      margin: 1rem auto;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #00b894;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Magnet Link Video Streamer</h1>
+  <input type="text" id="magnetLink" placeholder="Paste your magnet link here">
+  <br>
+  <button onclick="streamVideo()">Stream Now</button>
+  <div id="status"></div>
+  <video id="videoPlayer" controls autoplay></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+  <script>
+    const client = new WebTorrent();
+
+    function showStatus(message, loading = false) {
+      const status = document.getElementById('status');
+      status.innerHTML = loading ? `<div class="spinner"></div>${message}` : message;
+    }
+
+    function streamVideo() {
+      const magnetURI = document.getElementById('magnetLink').value;
+      const video = document.getElementById('videoPlayer');
+      video.src = '';
+      showStatus('Fetching torrent metadata...', true);
+
+      client.add(magnetURI, torrent => {
+        const file = torrent.files.find(f =>
+          f.name.endsWith('.mp4') || f.name.endsWith('.webm') || f.name.endsWith('.mkv')
+        );
+
+        if (!file) {
+          showStatus('No streamable video found in this torrent.');
+          return;
+        }
+
+        showStatus(`Streaming: ${file.name}`);
+        file.renderTo(video, { autoplay: true }, err => {
+          if (err) {
+            console.error(err);
+            showStatus('Failed to stream video.');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
