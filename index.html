@@ -1,80 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Magnet Video Streamer</title>
-  <style>
-    body {
-      background: #121212;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
-    }
-    input, button {
-      padding: 0.8rem;
-      font-size: 1rem;
-      width: 80%;
-      max-width: 600px;
-      border: none;
-      border-radius: 5px;
-      margin-bottom: 1rem;
-    }
-    button {
-      background-color: #00b894;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: #019875;
-    }
-    #output video {
-      margin-top: 20px;
-      width: 80%;
-      max-width: 800px;
-      border-radius: 8px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnet Video Streamer</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Magnet Link Streamer</h1>
-  <input type="text" id="magnetInput" placeholder="Paste your magnet link here">
-  <br>
-  <button onclick="startStream()">Stream</button>
-  <div id="status"></div>
-  <div id="output"></div>
+  <h1>Magnet Link Streamer</h1>
+  <input type="text" id="magnetInput" placeholder="Paste your magnet link here">
+  <br>
+  <button onclick="startStream()">Stream</button>
+  <div id="status"></div>
+  <div id="output"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
-  <script>
-    const client = new WebTorrent();
-
-    function startStream() {
-      const magnetURI = document.getElementById('magnetInput').value;
-      const output = document.getElementById('output');
-      const status = document.getElementById('status');
-      output.innerHTML = '';
-      status.textContent = 'Connecting to peers...';
-
-      client.add(magnetURI, torrent => {
-        const file = torrent.files.find(f => /\.(mp4|webm|mkv)$/i.test(f.name));
-        if (!file) {
-          status.textContent = 'No video file found in torrent.';
-          return;
-        }
-
-        status.textContent = 'Streaming: ' + file.name;
-        file.appendTo(output, {
-          autoplay: true,
-          controls: true
-        }, err => {
-          if (err) {
-            status.textContent = 'Error appending video.';
-            console.error(err);
-          }
-        });
-      });
-    }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
