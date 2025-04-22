@@ -129,7 +129,7 @@
         return;
       }
 
-      const playerUrl = `https://terabox.tech/player/index.html?url=${encodeURIComponent(userInput)}`;
+      const playerUrl = `https://terabox-play.noob-project.workers.dev/api?url=${encodeURIComponent(userInput)}`;
       document.getElementById("terabox-iframe").src = playerUrl;
       document.getElementById("terabox-player-container").style.display = "block";
     }
